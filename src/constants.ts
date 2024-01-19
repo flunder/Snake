@@ -45,7 +45,7 @@ export const GAME_OVER_PHRASES = [
   "Not on my watch!",
   "What in the world just happened?",
   "Oh, the horror!",
-  "This is a disaster!",
+  "What a disaster!",
   "Good gracious, no way!",
   "Well, that's a wrap.",
   "Oh, the despair!",

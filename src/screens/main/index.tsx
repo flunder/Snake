@@ -83,11 +83,11 @@ const Main = (): JSX.Element => {
 
     if (checkEatsFood(snakeHead, food, 2.5)) {
       setFood(getNewFood());
-      setScore((val) => (val += SCORE_INCREMENT));
+      increaseScore(SCORE_INCREMENT);
       setSnake([newSnakeHead, ...snake]);
     } else if (foodTimed && checkEatsFood(snakeHead, foodTimed, 2.5)) {
       setFoodTimed(null);
-      setScore((val) => (val += SCORE_INCREMENT_TIMED));
+      increaseScore(SCORE_INCREMENT_TIMED);
       setSnake([newSnakeHead, ...snake]);
     } else {
       const minLengthReached = snake.length >= MINIMUM_SNAKE_LENGTH;
@@ -111,6 +111,10 @@ const Main = (): JSX.Element => {
       }
     }
   });
+
+  const increaseScore = useCallback((amount: number) => {
+    setScore((val) => (val += amount));
+  }, []);
 
   const handlePause = useCallback(() => {
     setIsPaused((isPaused) => !isPaused);

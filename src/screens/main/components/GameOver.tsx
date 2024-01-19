@@ -31,7 +31,7 @@ const GameOver = memo(() => {
 
   const animateBlood = () => {
     Animated.timing(bloodLevel.current, {
-      toValue: -250,
+      toValue: -350,
       duration: 1500,
       useNativeDriver: true
     }).start();
@@ -47,18 +47,26 @@ const GameOver = memo(() => {
         }
       ]}
     >
-      <Animated.View
-        style={[
-          styles.blood,
-          { transform: [{ translateY: bloodLevel.current }] }
-        ]}
-      />
-      <View style={{ padding: 25, alignItems: "center" }}>
-        <SnakeEyesDead scale={4} style={styles.eyes} />
-        <Text style={styles.h1}>{pickOne(GAME_OVER_PHRASES)}</Text>
-        <Text>
-          Press <Text style={styles.emp}>space</Text> to try again.
-        </Text>
+      <View
+        style={{
+          flex: 1,
+          borderRadius: 8,
+          overflow: "hidden"
+        }}
+      >
+        <Animated.View
+          style={[
+            styles.blood,
+            { transform: [{ translateY: bloodLevel.current }] }
+          ]}
+        />
+        <View style={{ padding: 25, alignItems: "center" }}>
+          <SnakeEyesDead scale={4} style={styles.eyes} />
+          <Text style={styles.h1}>{pickOne(GAME_OVER_PHRASES)}</Text>
+          <Text style={{ textAlign: "center" }}>
+            Press <Text style={styles.emp}>space</Text> to try again.
+          </Text>
+        </View>
       </View>
     </Animated.View>
   );
@@ -68,28 +76,31 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.yellow,
     position: "absolute",
-    top: 200,
+    top: "33%",
     alignSelf: "center",
     alignItems: "center",
+    textAlign: "center",
     borderRadius: 12,
     borderWidth: 3,
-    overflow: "hidden",
-    width: "60%",
-    textAlign: "center"
+    shadowColor: "black",
+    shadowOffset: { width: 5, height: 5 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    marginHorizontal: 120
   },
   blood: {
     backgroundColor: Colors.red,
     position: "absolute",
-    height: "200%",
-    width: "100%",
+    width: "200%",
+    height: "300%",
     top: "100%"
   },
   h1: {
     fontSize: 20,
     fontWeight: "bold",
-    marginBottom: 4,
+    marginBottom: 12,
     backgroundColor: Colors.yellow,
-    padding: 5,
+    padding: 2,
     textAlign: "center"
   },
   eyes: {
