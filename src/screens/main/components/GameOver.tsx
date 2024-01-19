@@ -1,19 +1,27 @@
-import React, { memo, useEffect, useRef } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import { Animated, StyleSheet, Text, View } from "react-native";
 
 import { Colors } from "@snake/theme";
 import { pickOne } from "@snake/utils/pickOne";
 import { GAME_OVER_PHRASES } from "@snake/constants";
 import { SnakeEyesDead } from "@snake/components/Icons";
+import { getHighscore } from "../util/getHighscore";
 
 const GameOver = memo(() => {
   const bloodLevel = useRef(new Animated.Value(0));
   const containerOpacity = useRef(new Animated.Value(0));
   const containerOffset = useRef(new Animated.Value(0));
+  const [highScore, setHighscore] = useState<number | null>(null);
 
   useEffect(() => {
+    const getHighscoreAsync = async () => {
+      const score = await getHighscore();
+      setHighscore(score);
+    };
+
     animateIn();
     animateBlood();
+    getHighscoreAsync();
   }, []);
 
   const animateIn = () => {
@@ -63,6 +71,10 @@ const GameOver = memo(() => {
         <View style={{ padding: 25, alignItems: "center" }}>
           <SnakeEyesDead scale={4} style={styles.eyes} />
           <Text style={styles.h1}>{pickOne(GAME_OVER_PHRASES)}</Text>
+          <Text style={styles.h2}>
+            HighScore{"\n"}
+            {highScore}
+          </Text>
           <Text style={{ textAlign: "center" }}>
             Press <Text style={styles.emp}>space</Text> to try again.
           </Text>
@@ -100,7 +112,15 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 12,
     backgroundColor: Colors.yellow,
-    padding: 2,
+    padding: 5,
+    textAlign: "center"
+  },
+  h2: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 5,
+    backgroundColor: Colors.yellow,
+    padding: 5,
     textAlign: "center"
   },
   eyes: {

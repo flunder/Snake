@@ -27,7 +27,8 @@ export const COUNTDOWN_START = 5;
 export const TIMED_FOOD_APPEAR_CHANCE = 200; /* 1 in 200 */
 
 export const ASYNC_STORAGE_KEYS = {
-  ENABLE_KEYS: "ENABLE_KEYS"
+  ENABLE_KEYS: "ENABLE_KEYS",
+  HIGH_SCORE: "HIGH_SCORE"
 };
 
 export const GAME_OVER_PHRASES = [

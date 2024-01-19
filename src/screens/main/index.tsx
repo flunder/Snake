@@ -15,6 +15,8 @@ import { KeyboardInput } from "./components/KeyboardInput";
 
 import { getNewFood } from "./util/getNewFood";
 import { getNewMeat } from "./util/getNewMeat";
+import { getHighscore } from "./util/getHighscore";
+import { saveHighscore } from "./util/saveHighscore";
 import { checkEatsFood } from "./util/checkEatsFood";
 import { checkGameOver } from "./util/checkgameOver";
 import { createTimedFood } from "./util/createTimedFood";
@@ -51,11 +53,12 @@ const Main = (): JSX.Element => {
     }
   }, [snake, isGameOver, isPaused]);
 
-  const moveSnake = () => {
+  const moveSnake = async () => {
     const snakeHead = snake[0];
     const newSnakeHead = { ...snakeHead };
 
     if (checkGameOver(snake, GAME_BOUNDS)) {
+      await checkForHighscore(score);
       setIsGameOver((prev) => !prev);
       return;
     }
@@ -136,9 +139,7 @@ const Main = (): JSX.Element => {
         ASYNC_STORAGE_KEYS.ENABLE_KEYS,
         newKeyboardState ? "true" : "false"
       );
-    } catch (e) {
-      // saving error
-    }
+    } catch (e) {}
   }, [isKeyboardEnabled]);
 
   const handleKeyPressed = useCallback(
@@ -176,6 +177,11 @@ const Main = (): JSX.Element => {
   const clearTimedFood = useCallback(() => {
     setFoodTimed(null);
   }, []);
+
+  const checkForHighscore = async (score: number) => {
+    const highscore = await getHighscore();
+    if (score > highscore) saveHighscore(score);
+  };
 
   return (
     <GestureDetector gesture={pan}>
