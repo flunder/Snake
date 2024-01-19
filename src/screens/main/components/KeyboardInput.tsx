@@ -4,7 +4,6 @@ import {
   TextInput,
   TextInputKeyPressEventData
 } from "react-native";
-import { Colors } from "@snake/theme";
 
 interface Props {
   isKeyboardEnabled: boolean;
@@ -32,7 +31,6 @@ const KeyboardInput = memo(({ isKeyboardEnabled, handleKeyPressed }: Props) => {
 
 const styles = StyleSheet.create({
   textInput: {
-    backgroundColor: Colors.white,
     width: 0,
     height: 0,
     zIndex: -1

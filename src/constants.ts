@@ -9,6 +9,8 @@ export const FRUIT = {
   "🍊": "🍊"
 };
 
+export const FRUIT_BG = [`#EDA0A9`, "#FFD98B"];
+
 export const SNAKE_INITIAL_POSITION: Coordinate[] = [{ x: 5, y: 5 }];
 export const FOOD_INITIAL_POSITION: Coordinate = { x: 5, y: 20 };
 export const GAME_BOUNDS = { xMin: 0, xMax: 35, yMin: 0, yMax: 65 };
