@@ -10,9 +10,14 @@ import { Snake } from "./components/Snake";
 import { Food } from "./components/Food";
 import { Header } from "./components/Header";
 import { FoodTimed } from "./components/FoodTimed";
+import { KeyboardInput } from "./components/KeyboardInput";
+
+import { getNewFood } from "./util/getNewFood";
+import { getNewMeat } from "./util/getNewMeat";
 import { checkEatsFood } from "./util/checkEatsFood";
 import { checkGameOver } from "./util/checkgameOver";
 import { createTimedFood } from "./util/createTimedFood";
+import { useKeyboardState } from "./util/useKeyboardState";
 
 import {
   SNAKE_INITIAL_POSITION,
@@ -20,18 +25,17 @@ import {
   MOVE_INTERVAL,
   SCORE_INCREMENT,
   SCORE_INCREMENT_TIMED,
-  MINIMUM_SNAKE_LENGTH
+  MINIMUM_SNAKE_LENGTH,
+  ASYNC_STORAGE_KEYS
 } from "@snake/constants";
-import { getNewFood } from "./util/getNewFood";
-import { getNewMeat } from "./util/getNewMeat";
-import { KeyboardInput } from "./components/KeyboardInput";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Main = (): JSX.Element => {
   const [direction, setDirection] = useState<Direction>(Direction.Right);
   const [snake, setSnake] = useState<Coordinate[]>(SNAKE_INITIAL_POSITION);
   const [food, setFood] = useState<FoodType>(getNewFood);
   const [foodTimed, setFoodTimed] = useState<FoodType | null>(getNewMeat);
-  const [isKeyboardEnabled, setIsKeyboardEnabled] = useState(false);
+  const [isKeyboardEnabled, setIsKeyboardEnabled] = useKeyboardState();
   const [isGameOver, setIsGameOver] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [score, setScore] = useState(0);
@@ -119,8 +123,17 @@ const Main = (): JSX.Element => {
     setIsGameOver(false);
   }, []);
 
-  const handleToggleKeyboard = useCallback(() => {
-    setIsKeyboardEnabled(!isKeyboardEnabled);
+  const handleToggleKeyboard = useCallback(async () => {
+    const newKeyboardState = !isKeyboardEnabled;
+    setIsKeyboardEnabled(newKeyboardState);
+    try {
+      await AsyncStorage.setItem(
+        ASYNC_STORAGE_KEYS.ENABLE_KEYS,
+        newKeyboardState ? "true" : "false"
+      );
+    } catch (e) {
+      // saving error
+    }
   }, [isKeyboardEnabled]);
 
   const handleKeyPressed = useCallback(
