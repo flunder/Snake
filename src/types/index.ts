@@ -1,6 +1,8 @@
-export type Values<T> = T[keyof T];
-
 import { FRUIT } from "@snake/constants";
+import { MEAT } from "@snake/constants";
+
+// Util
+export type Values<T> = T[keyof T];
 
 export interface Coordinate {
   x: number;
@@ -21,8 +23,9 @@ export interface Boundaries {
   yMax: number;
 }
 
-export type fruitType = Values<typeof FRUIT>;
+export type FruitType = Values<typeof FRUIT>;
+export type MeatType = Values<typeof MEAT>;
 
 export interface Food extends Coordinate {
-  fruit: fruitType;
+  icon: FruitType | MeatType;
 }

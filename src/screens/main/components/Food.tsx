@@ -22,7 +22,7 @@ const Food = memo(({ food, children }: Props) => {
 
   return (
     <View style={[styles.food, locationStyle, bgColor]}>
-      <Text>{food.fruit}</Text>
+      <Text>{food.icon}</Text>
       {children}
     </View>
   );

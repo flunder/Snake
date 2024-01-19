@@ -8,8 +8,8 @@ import { Coordinate, Direction, Food as FoodType } from "@snake/types";
 
 import { Snake } from "./components/Snake";
 import { Food } from "./components/Food";
-import { FoodTimed } from "./components/FoodTimed";
 import { Header } from "./components/Header";
+import { FoodTimed } from "./components/FoodTimed";
 import { checkEatsFood } from "./util/checkEatsFood";
 import { checkGameOver } from "./util/checkgameOver";
 import { createTimedFood } from "./util/createTimedFood";
@@ -23,13 +23,14 @@ import {
   MINIMUM_SNAKE_LENGTH
 } from "@snake/constants";
 import { getNewFood } from "./util/getNewFood";
+import { getNewMeat } from "./util/getNewMeat";
 import { KeyboardInput } from "./components/KeyboardInput";
 
 const Main = (): JSX.Element => {
   const [direction, setDirection] = useState<Direction>(Direction.Right);
   const [snake, setSnake] = useState<Coordinate[]>(SNAKE_INITIAL_POSITION);
-  const [food, setFood] = useState<FoodType>(getNewFood());
-  const [foodTimed, setFoodTimed] = useState<FoodType | null>(getNewFood());
+  const [food, setFood] = useState<FoodType>(getNewFood);
+  const [foodTimed, setFoodTimed] = useState<FoodType | null>(getNewMeat);
   const [isKeyboardEnabled, setIsKeyboardEnabled] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -55,7 +56,7 @@ const Main = (): JSX.Element => {
     }
 
     if (createTimedFood(!!foodTimed)) {
-      setFoodTimed(getNewFood());
+      setFoodTimed(getNewMeat);
     }
 
     switch (direction) {
@@ -75,11 +76,11 @@ const Main = (): JSX.Element => {
         break;
     }
 
-    if (checkEatsFood(snakeHead, food, 3)) {
+    if (checkEatsFood(snakeHead, food, 2.5)) {
       setFood(getNewFood());
       setScore((val) => (val += SCORE_INCREMENT));
       setSnake([newSnakeHead, ...snake]);
-    } else if (foodTimed && checkEatsFood(snakeHead, foodTimed, 3)) {
+    } else if (foodTimed && checkEatsFood(snakeHead, foodTimed, 2.5)) {
       setFoodTimed(null);
       setScore((val) => (val += SCORE_INCREMENT_TIMED));
       setSnake([newSnakeHead, ...snake]);
