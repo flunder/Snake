@@ -9,6 +9,7 @@ import { Coordinate, Direction, Food as FoodType } from "@snake/types";
 import { Snake } from "./components/Snake";
 import { Food } from "./components/Food";
 import { Header } from "./components/Header";
+import { GameOver } from "./components/GameOver";
 import { FoodTimed } from "./components/FoodTimed";
 import { KeyboardInput } from "./components/KeyboardInput";
 
@@ -158,11 +159,14 @@ const Main = (): JSX.Element => {
         case "R":
           Updates.reloadAsync();
           break;
+        case " ":
+          isGameOver ? handleRestart() : handlePause();
+          break;
         default:
           break;
       }
     },
-    [direction]
+    [direction, isGameOver]
   );
 
   const clearTimedFood = useCallback(() => {
@@ -193,6 +197,7 @@ const Main = (): JSX.Element => {
             handleKeyPressed={handleKeyPressed}
           />
         </View>
+        {isGameOver && <GameOver />}
       </SafeAreaView>
     </GestureDetector>
   );
