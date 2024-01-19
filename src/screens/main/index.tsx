@@ -1,3 +1,4 @@
+import * as Updates from "expo-updates";
 import React, { useState, useEffect, useCallback } from "react";
 import { SafeAreaView, StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
@@ -7,17 +8,18 @@ import { Coordinate, Direction, Food as FoodType } from "@snake/types";
 
 import { Snake } from "./components/Snake";
 import { Food } from "./components/Food";
+import { FoodTimed } from "./components/FoodTimed";
 import { Header } from "./components/Header";
 import { checkEatsFood } from "./util/checkEatsFood";
 import { checkGameOver } from "./util/checkgameOver";
-import { getRandomFruit } from "./util/getRandomFruit";
+import { createTimedFood } from "./util/createTimedFood";
 
 import {
   SNAKE_INITIAL_POSITION,
-  FOOD_INITIAL_POSITION,
   GAME_BOUNDS,
   MOVE_INTERVAL,
   SCORE_INCREMENT,
+  SCORE_INCREMENT_TIMED,
   MINIMUM_SNAKE_LENGTH
 } from "@snake/constants";
 import { getNewFood } from "./util/getNewFood";
@@ -27,10 +29,11 @@ const Main = (): JSX.Element => {
   const [direction, setDirection] = useState<Direction>(Direction.Right);
   const [snake, setSnake] = useState<Coordinate[]>(SNAKE_INITIAL_POSITION);
   const [food, setFood] = useState<FoodType>(getNewFood());
+  const [foodTimed, setFoodTimed] = useState<FoodType | null>(getNewFood());
+  const [isKeyboardEnabled, setIsKeyboardEnabled] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [score, setScore] = useState(0);
-  const [isKeyboardEnabled, setIsKeyboardEnabled] = useState(false);
 
   useEffect(() => {
     if (!isGameOver) {
@@ -49,6 +52,10 @@ const Main = (): JSX.Element => {
     if (checkGameOver(snake, GAME_BOUNDS)) {
       setIsGameOver((prev) => !prev);
       return;
+    }
+
+    if (createTimedFood(!!foodTimed)) {
+      setFoodTimed(getNewFood());
     }
 
     switch (direction) {
@@ -71,6 +78,10 @@ const Main = (): JSX.Element => {
     if (checkEatsFood(snakeHead, food, 3)) {
       setFood(getNewFood());
       setScore((val) => (val += SCORE_INCREMENT));
+      setSnake([newSnakeHead, ...snake]);
+    } else if (foodTimed && checkEatsFood(snakeHead, foodTimed, 3)) {
+      setFoodTimed(null);
+      setScore((val) => (val += SCORE_INCREMENT_TIMED));
       setSnake([newSnakeHead, ...snake]);
     } else {
       const minLengthReached = snake.length >= MINIMUM_SNAKE_LENGTH;
@@ -102,7 +113,7 @@ const Main = (): JSX.Element => {
   const handleRestart = useCallback(() => {
     setScore(0);
     setSnake(SNAKE_INITIAL_POSITION);
-    setFood({ ...FOOD_INITIAL_POSITION, fruit: getRandomFruit() });
+    setFood(getNewFood());
     setIsPaused(false);
     setIsGameOver(false);
   }, []);
@@ -130,12 +141,19 @@ const Main = (): JSX.Element => {
           if (direction === Direction.Down) return;
           setDirection(Direction.Up);
           break;
+        case "R":
+          Updates.reloadAsync();
+          break;
         default:
           break;
       }
     },
     [direction]
   );
+
+  const clearTimedFood = useCallback(() => {
+    setFoodTimed(null);
+  }, []);
 
   return (
     <GestureDetector gesture={pan}>
@@ -151,6 +169,11 @@ const Main = (): JSX.Element => {
         <View style={styles.boundaries}>
           <Snake snake={snake} direction={direction} isGameOver={isGameOver} />
           <Food food={food} />
+          <FoodTimed
+            food={foodTimed}
+            clearTimedFood={clearTimedFood}
+            isPaused={isPaused}
+          />
           <KeyboardInput
             isKeyboardEnabled={isKeyboardEnabled}
             handleKeyPressed={handleKeyPressed}
